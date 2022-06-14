@@ -19,19 +19,6 @@ RUN apk add --no-cache \
 		git \
 	;
 
-# Extensions
-RUN echo "Extensions install - start" \
-    # Sockets
-    && docker-php-ext-install sockets \
-    # Amqp
-    && apk add --no-cache --update rabbitmq-c-dev \
-    && apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS \
-    && pecl install -o -f amqp \
-    && docker-php-ext-enable amqp \
-    && apk del .phpize-deps \
-    #
-    && echo "Extensions install - finish"
-
 ARG APCU_VERSION=5.1.21
 RUN set -eux; \
 	apk add --no-cache --virtual .build-deps \
@@ -106,12 +93,6 @@ RUN composer create-project "${SKELETON} ${SYMFONY_VERSION}" . --stability=$STAB
 	composer clear-cache
 
 ###> recipes ###
-###> doctrine/doctrine-bundle ###
-RUN apk add --no-cache --virtual .pgsql-deps postgresql-dev; \
-	docker-php-ext-install -j$(nproc) pdo_pgsql; \
-	apk add --no-cache --virtual .pgsql-rundeps so:libpq.so.5; \
-	apk del .pgsql-deps
-###< doctrine/doctrine-bundle ###
 ###< recipes ###
 
 COPY . .
