@@ -19,6 +19,19 @@ RUN apk add --no-cache \
 		git \
 	;
 
+# Extensions
+RUN echo "Extensions install - start" \
+    # Sockets
+    && docker-php-ext-install sockets \
+    # Amqp
+    && apk add --no-cache --update rabbitmq-c-dev \
+    && apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS \
+    && pecl install -o -f amqp \
+    && docker-php-ext-enable amqp \
+    && apk del .phpize-deps \
+    #
+    && echo "Extensions install - finish"
+
 ARG APCU_VERSION=5.1.21
 RUN set -eux; \
 	apk add --no-cache --virtual .build-deps \
