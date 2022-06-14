@@ -24,7 +24,8 @@ class ProductStockReminderHandler implements MessageHandlerInterface
 
         $response = $this->httpClient->request(
             'POST',
-            $this->params->get('store_handler_url'),
+            'http://store.local.dracocomarch.com/module/vitatiendamain/handler',
+            //$this->params->get('store_handler_url'),
             [
                 'json' => ['id_product' => $id_product, 'id_product_attribute' => $id_product_attribute]
             ]
