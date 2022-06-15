@@ -13,8 +13,8 @@ RUN apt-get update \
     && apt-get install -y git acl openssl openssh-client wget zip vim librabbitmq-dev libssh-dev \
     && apt-get install -y libpng-dev zlib1g-dev libzip-dev libxml2-dev libicu-dev \
     && docker-php-ext-install intl pdo pdo_mysql zip gd soap bcmath sockets \
-    && pecl install xdebug amqp \
-    && docker-php-ext-enable --ini-name 05-opcache.ini opcache amqp xdebug
+    && pecl install amqp \
+    && docker-php-ext-enable --ini-name 05-opcache.ini opcache amqp 
 
 RUN curl https://getcomposer.org/composer.phar -o /usr/bin/composer && chmod +x /usr/bin/composer
 RUN composer self-update
@@ -27,11 +27,7 @@ RUN mkdir -p /app
 
 ARG HOST
 COPY ./php.ini /usr/local/etc/php/php.ini
-COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-RUN echo "xdebug.remote_host=${HOST}" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 USER appuser
-RUN composer global require "hirak/prestissimo:^0.3" --prefer-dist --no-progress --no-suggest --optimize-autoloader --classmap-authoritative \
-	&& composer clear-cache
 
 WORKDIR /app
